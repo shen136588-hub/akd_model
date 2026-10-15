@@ -1,0 +1,39 @@
+# --- patient-level data & derived artifacts ---
+# MIMIC-IV / eICU-CRD / SICdb are credentialed datasets; their data-use
+# agreements forbid public redistribution. Never commit these.
+*.csv
+*.npz
+*.npy
+*.parquet
+*.pkl
+*.pt
+*.pth
+*.bin
+*.h5
+*.zip
+*.gz
+
+# --- run outputs / logs ---
+*.log
+*.out
+*.err
+runs/
+results/
+figures/
+logs/
+out/
+
+# --- pipeline intermediate dirs ---
+export_*/
+assembled_*/
+dataset_*/
+
+# --- caches ---
+__pycache__/
+.ipynb_checkpoints/
+*.ipynb
+
+# --- backups & local tooling ---
+*.bak*
+_build_repo.py
+.vscode/
