@@ -22,8 +22,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from metrics_v2 import full_report
-from model_v2 import AKDNet
+from step0_metrics import full_report
+from step1_model_informer import AKDNet
 
 
 def load_split(dataset, split):

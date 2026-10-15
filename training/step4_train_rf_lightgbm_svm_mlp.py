@@ -30,8 +30,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-from metrics_v2 import full_report
-from train_baselines import load
+from step0_metrics import full_report
+from step3_train_lr_xgboost import load
 
 
 def clean(X):

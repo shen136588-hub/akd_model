@@ -10,12 +10,14 @@ predictions, so we regenerate val predictions from the LOCKED artefacts
 (pkl / best.pt) -- no refitting, so this cannot change any reported metric.
 """
 import argparse
+import sys
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "training"))
 
 import joblib
 import numpy as np
 
-from train_baselines import load as tab_load
+from step3_train_lr_xgboost import load as tab_load
 
 
 def main():
@@ -54,7 +56,7 @@ def main():
     import torch
     from torch.utils.data import DataLoader, TensorDataset
 
-    from model_simple_tf import SimpleTransformer
+    from step2_model_transformer import SimpleTransformer
     rd = "runs/simple_tf_B" + sfx
     cfg = json.load(open(os.path.join(rd, "model_config.json"),
                          encoding="utf-8"))

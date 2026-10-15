@@ -17,14 +17,15 @@ import argparse
 import json
 import os
 import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "training"))
 
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from metrics_v2 import full_report
-from model_v2 import AKDNet
+from step0_metrics import full_report
+from step1_model_informer import AKDNet
 
 
 def main():

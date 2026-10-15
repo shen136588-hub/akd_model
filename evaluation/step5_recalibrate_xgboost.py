@@ -37,8 +37,10 @@ Usage
   python recalibrate_xgb.py --plan B --results results/external_B_nodiag_fix
 """
 import argparse
+import sys
 import json
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "training"))
 
 import joblib
 import matplotlib
@@ -51,7 +53,7 @@ from sklearn.linear_model import LogisticRegression  # noqa: E402
 from sklearn.metrics import average_precision_score, roc_auc_score  # noqa: E402
 from sklearn.model_selection import StratifiedKFold  # noqa: E402
 
-from metrics_v2 import calibration_slope_intercept, decision_curve  # noqa: E402
+from step0_metrics import calibration_slope_intercept, decision_curve  # noqa: E402
 
 EPS = 1e-6
 HERE = os.path.dirname(os.path.abspath(__file__))

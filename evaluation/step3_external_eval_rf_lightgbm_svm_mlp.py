@@ -12,14 +12,16 @@ Handles BOTH families in one pass:
 NEVER refits. The external npz already carries MIMIC's locked scaler/imputer.
 """
 import argparse
+import sys
 import json
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "training"))
 
 import joblib
 import numpy as np
 
-from metrics_v2 import full_report
-from train_baselines import summarize_ts
+from step0_metrics import full_report
+from step3_train_lr_xgboost import summarize_ts
 
 SK_MODELS = ["rf", "lightgbm", "svm", "mlp"]
 
@@ -36,7 +38,7 @@ def eval_simple_tf(run_dir, npz_path, bs=256):
     import torch
     from torch.utils.data import DataLoader, TensorDataset
 
-    from model_simple_tf import SimpleTransformer
+    from step2_model_transformer import SimpleTransformer
 
     cfg = json.load(open(os.path.join(run_dir, "model_config.json"),
                          encoding="utf-8"))

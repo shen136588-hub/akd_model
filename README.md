@@ -24,27 +24,27 @@ feature_pipeline/           # CSV -> wide parquet -> impute/scale -> .npz
   04_diag_embedding.py      #   Bio_ClinicalBERT diagnosis embedding -> 32-d PCA
   run_pipeline.py           #   orchestrates the SQL feature export
 models/                     # (reserved)
-training/
+training/                   # files are prefixed in dependency/run order (step0 -> step6)
   informer2020/             # vendored Informer modules (attn/encoder/embed) + original LICENSE
-  model_v2.py               # AKDNet: Informer ProbAttention encoder + static MLP -> logit
-  model_simple_tf.py        # capacity-controlled plain Transformer
-  train_baselines.py        # logistic regression + XGBoost
-  train_zoo.py              # random forest / LightGBM / kernel SVM / MLP (same split & seed)
-  train_informer.py         # AKDNet trainer (BCEWithLogitsLoss, AMP, early stop)
-  train_simple_tf.py        # plain-Transformer trainer
-  metrics_v2.py             # AUROC/AUPRC/Brier/calibration slope/DCA + 2000x bootstrap CI
-evaluation/
-  external_eval.py          # locked PyTorch ckpt -> eICU/SICdb inference + report.json
-  external_eval_baselines.py# same for LR / XGBoost
-  external_eval_zoo.py      # same for RF / LightGBM / SVM / MLP
-  recalibrate_external.py   # post-hoc Platt/isotonic recalibration ceiling (S1' analysis)
-  recalibrate_xgb.py        # recalibration for the primary XGBoost model
-  summarize_results.py      # aggregate reports -> tables + calibration/DCA figures
-  dump_val_preds.py         # export validation-split predictions
+  step0_metrics.py          # AUROC/AUPRC/Brier/calibration slope/DCA + 2000x bootstrap CI
+  step1_model_informer.py   # AKDNet: Informer ProbAttention encoder + static MLP -> logit
+  step2_model_transformer.py# capacity-controlled plain Transformer
+  step3_train_lr_xgboost.py # logistic regression + XGBoost
+  step4_train_rf_lightgbm_svm_mlp.py  # RF / LightGBM / kernel SVM / MLP (same split & seed)
+  step5_train_informer.py   # AKDNet trainer (BCEWithLogitsLoss, AMP, early stop)
+  step6_train_transformer.py# plain-Transformer trainer
+evaluation/                 # step1 -> step7 in run order
+  step1_external_eval_informer.py            # locked PyTorch ckpt -> eICU/SICdb inference
+  step2_external_eval_lr_xgboost.py          # same for LR / XGBoost
+  step3_external_eval_rf_lightgbm_svm_mlp.py # same for RF / LightGBM / SVM / MLP
+  step4_recalibrate_external.py              # post-hoc Platt/isotonic recalibration ceiling
+  step5_recalibrate_xgboost.py               # recalibration for the primary XGBoost model
+  step6_summarize_results.py                 # aggregate reports -> tables + calib/DCA figures
+  step7_dump_val_predictions.py              # export validation-split predictions
 explainability/
-  shap_xgb.py               # SHAP for the locked primary XGBoost model (never refits)
-  shap_sensitivity.py       # SHAP robustness analyses
-  fig_shap.py               # manuscript SHAP figures
+  step1_shap_xgboost.py     # SHAP for the locked primary XGBoost model (never refits)
+  step2_shap_sensitivity.py # SHAP robustness analyses
+  step3_fig_shap.py         # manuscript SHAP figures
 docs/
 ```
 
@@ -91,25 +91,25 @@ python feature_pipeline/03_split_impute_scale.py   # split + fit transforms -> d
 python feature_pipeline/04_diag_embedding.py       # BioBERT -> PCA -> merge into X_static
 
 # 3. Training (all models share the same patient-level split, seed 42)
-python training/train_baselines.py --dataset <mimic_dataset> --outdir runs/baseline_B
-python training/train_zoo.py        --dataset <mimic_dataset> --outdir runs/zoo_B
-python training/train_informer.py   --dataset <mimic_dataset> --outdir runs/informer_B
-python training/train_simple_tf.py  --dataset <mimic_dataset> --outdir runs/simple_tf_B
+python training/step3_train_lr_xgboost.py --dataset <mimic_dataset> --outdir runs/baseline_B
+python training/step4_train_rf_lightgbm_svm_mlp.py --dataset <mimic_dataset> --outdir runs/zoo_B
+python training/step5_train_informer.py   --dataset <mimic_dataset> --outdir runs/informer_B
+python training/step6_train_transformer.py --dataset <mimic_dataset> --outdir runs/simple_tf_B
 
 # 4. External validation (locked artifacts; never refits)
 python feature_pipeline/03b_external_transform.py --mimic_dataset <mimic_dataset> ...
-python evaluation/external_eval.py            # Informer
-python evaluation/external_eval_baselines.py  # LR / XGBoost
-python evaluation/external_eval_zoo.py        # RF / LightGBM / SVM / MLP
-python evaluation/external_eval.py --simple_tf ...  # plain Transformer
+python evaluation/step1_external_eval_informer.py            # Informer
+python evaluation/step2_external_eval_lr_xgboost.py          # LR / XGBoost
+python evaluation/step3_external_eval_rf_lightgbm_svm_mlp.py # RF / LightGBM / SVM / MLP
+python evaluation/step1_external_eval_informer.py --simple_tf ...  # plain Transformer
 
 # 5. Recalibration ceiling + summary
-python evaluation/recalibrate_external.py ...
-python evaluation/summarize_results.py ...
+python evaluation/step4_recalibrate_external.py ...
+python evaluation/step6_summarize_results.py ...
 
 # 6. Explainability
-python explainability/shap_xgb.py ...
-python explainability/fig_shap.py ...
+python explainability/step1_shap_xgboost.py ...
+python explainability/step3_fig_shap.py ...
 ```
 
 Exact command lines and paths are environment-specific; the entry points above mirror the
@@ -123,7 +123,7 @@ run order used for the manuscript results.
 - **Single split**: every model sees the same patient-level 60/20/20 split (seed 42).
 - **TRIPOD+AI metrics**: AUROC/AUPRC/Brier/calibration slope with 2,000-resample
   bootstrap CIs, DeLong comparisons against XGBoost with BH correction, decision-curve
-  net benefit over the 0.20–0.50 threshold band (`training/metrics_v2.py`).
+  net benefit over the 0.20–0.50 threshold band (`training/step0_metrics.py`).
 
 ## Third-party components
 

@@ -17,8 +17,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from metrics_v2 import full_report
-from model_simple_tf import SimpleTransformer, count_params
+from step0_metrics import full_report
+from step2_model_transformer import SimpleTransformer, count_params
 
 
 def load(dataset, split):

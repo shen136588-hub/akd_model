@@ -25,15 +25,17 @@ Usage:
       --eicu <eicu npz> --sicdb <sicdb npz> --outdir results/shap_xgb_B_tier1
 """
 import argparse
+import sys
 import json
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "training"))
 
 import joblib
 import numpy as np
 import pandas as pd
 
-from train_baselines import load as tab_load
-from train_baselines import summarize_ts
+from step3_train_lr_xgboost import load as tab_load
+from step3_train_lr_xgboost import summarize_ts
 
 # summarize_ts appends blocks in this exact order, one block per statistic,
 # each block spanning all timeseries features

@@ -27,8 +27,10 @@ Usage:
   python recalibrate_external.py --outdir results/external_nodiag/recalib
 """
 import argparse
+import sys
 import json
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "training"))
 
 import numpy as np
 import matplotlib
@@ -38,7 +40,7 @@ from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 
-from metrics_v2 import calibration_slope_intercept, decision_curve
+from step0_metrics import calibration_slope_intercept, decision_curve
 
 EPS = 1e-6
 

@@ -19,7 +19,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 
-from metrics_v2 import full_report
+from step0_metrics import full_report
 
 
 def summarize_ts(X_ts, mask):

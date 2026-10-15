@@ -29,7 +29,7 @@ import pandas as pd
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-from shap_xgb import build_names, inverse_axis  # noqa: E402
+from step1_shap_xgboost import build_names, inverse_axis  # noqa: E402
 
 PRETTY = {
     "creat_lab__last": "Creatinine, last value (mg/dL)",

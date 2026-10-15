@@ -18,14 +18,16 @@ Usage:
       --cohort eicu --outdir results/external_nodiag
 """
 import argparse
+import sys
 import json
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "training"))
 
 import joblib
 import numpy as np
 
-from metrics_v2 import full_report
-from train_baselines import summarize_ts
+from step0_metrics import full_report
+from step3_train_lr_xgboost import summarize_ts
 
 
 def build_features(npz_path):

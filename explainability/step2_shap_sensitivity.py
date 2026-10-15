@@ -34,7 +34,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
-from shap_xgb import build_names, load_external
+from step1_shap_xgboost import build_names, load_external
 
 
 def main():
